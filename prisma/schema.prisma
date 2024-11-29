@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  created_at DateTime @default(now())
+
+  ScoreBoard Scoreboard[]
+
+  @@map("users")
+}
+
+model Question {
+  id          String   @id @default(uuid())
+  enunciation String
+  options     String // JSON.stringify()
+  answer      Int // index of array
+  created_at  DateTime @default(now())
+
+  @@map("questions")
+}
+
+model Scoreboard {
+  id         String   @id @default(uuid())
+  score      Int // 51.73% => 5173
+  user_id    String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("scoreboards")
+}
